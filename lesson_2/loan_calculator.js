@@ -1,28 +1,32 @@
 let rlSync = require('readline-sync');
 
 function anotherCalculation() {
-  let answer = rlSync.question("\nWould you like to make another calculation?" +
-  "\n(Y or y for Yes, otherwise any other key to quit.)  ");
-  if (answer === 'Y' ||  answer === 'y') {
-    console.log("-----------------------------------------------------\n");
-    return true;
+  while (true) {
+    let answer = rlSync.question("Would you like to make another calculation?" +
+    "(type 'yes' or type 'no' please.)  ");
+    if (answer === 'Yes' ||  answer === 'yes') {
+      console.log("-----------------------------------------------------\n");
+      console.clear();
+      return true;
+
+    } else if (answer === 'No' || answer === 'no') {
+      return false;
+    } else {
+      console.log("Please answer the question with one of the correct responses.");
+    }
   }
-  return false;
 }
 
 function validNumber(value) {
-  if (isNaN(value) || value < 0) {
-    return false;
-  }
-  return true;
+  return (!isNaN(value) && value > 0);
 }
 
 function getMonthlyInterestRate() {
   let interestRate = 1;
   while (true) {
     interestRate = rlSync.question("Annual interest rate of the loan? (Ex. Enter 5 for 5%) ");
-    if (interestRate > 100 || !validNumber(interestRate)) {
-      console.log("Please enter a valid interest rate between 0 and 100\n");
+    if (interestRate < 1 || interestRate > 100 || !validNumber(interestRate)) {
+      console.log("Please enter a valid interest rate between 0 and 100");
     } else {
       break;
     }
@@ -40,38 +44,38 @@ function getMonthlyPayment(loanAmount, loanLengthMonths, monthlyInterestRate) {
 
 console.log("WELCOME TO LOAN CALCULATOR!");
 console.log("--------------------------");
-let isFinished = false;
 
-while (!isFinished) {
+do {
   let loanAmount = 0;
   let loanLengthMonths = 0;
   while (true) {
-    loanAmount = rlSync.question("Enter loan amount: \n");
+    loanAmount = rlSync.question("Enter loan amount: ");
     if (validNumber(loanAmount)) {
       break;
     }
-    console.log("Please enter a valid number for the loan amount.. \n");
+    console.log("Please enter a valid number for the loan amount..");
   }
   while (true) {
-    loanLengthMonths = rlSync.question("Enter the loan duration (in months): \n");
+    loanLengthMonths = rlSync.question("Enter the loan duration (in months): ");
     if (validNumber(loanLengthMonths)) {
       break;
     }
-    console.log("Please enter a valid number for the loan duration.. \n");
+    console.log("Please enter a valid number for the loan duration..");
   }
 
-  // Returns the monthly payment
-  // eslint-disable-next-line max-len
-  let monthlyPayment = getMonthlyPayment(loanAmount, loanLengthMonths, getMonthlyInterestRate());
+  let monthlyPayment = getMonthlyPayment(loanAmount,
+    loanLengthMonths, getMonthlyInterestRate());
 
 
   let totalPayment = (monthlyPayment * loanLengthMonths).toFixed(2);
 
-  console.log("Thank you.. Your monthly payment is: $" + monthlyPayment.toFixed(2));
-  console.log("Total of " + (loanLengthMonths) + " payments is: $" + totalPayment);
+  console.log("\nThank you.. Your monthly payment is: $" + monthlyPayment.toFixed(2));
+  console.log("Total of " + (loanLengthMonths) + " payments is: $" + totalPayment + '\n');
 
   if (!anotherCalculation()) {
-    isFinished = true;
+    break;
   }
-}
+
+} while (true);
+
 console.log("Thanks for using Loan Calculator! ");
